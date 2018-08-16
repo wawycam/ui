@@ -46,6 +46,8 @@
               v-if="ssidList.length > 0"
               v-model="ssid"
               float-label="Select a wifi network"
+              @focus="startSsidSearch"
+              @blur="clearSsidSearch"
               @input="setWifi"
               :options="ssidList"
             />
@@ -138,37 +140,43 @@ export default {
         });
 
       this.getSsids();
+      this.getConnectedSsid();
     },
     getSsids() {
-      this.pollingSsidList = setInterval(() => {
-        this.axios.get('/wifi')
-          .then((response) => {
-            const ssids = response.data;
-            this.ssidList = ssids.list.map((ssid) => {
-              let icon = 'signal_wifi_4_bar_lock';
-              let leftColor = 'grey';
-              if (this.ssid === ssid.ssid) {
-                icon = 'signal_wifi_4_bar';
-                leftColor = 'green';
-              } else if (this.ssidsEnabled.indexOf(ssid.ssid) > -1) {
-                icon = 'signal_wifi_4_bar';
-                leftColor = 'grey';
-              }
-              return {
-                label: ssid.ssid,
-                value: ssid.ssid,
-                icon,
-                leftColor,
-              };
-            });
-            this.axios.get('/wifi/status')
-              .then((activeSsid) => {
-                if (activeSsid && activeSsid.data.ssid && activeSsid.data.ip_address) {
-                  this.ssid = activeSsid.data.ssid;
-                  this.ip = activeSsid.data.ip_address;
-                }
-              });
+      this.axios.get('/wifi')
+        .then((response) => {
+          const ssids = response.data;
+          this.ssidList = ssids.list.map((ssid) => {
+            let icon = 'signal_wifi_4_bar_lock';
+            let leftColor = 'grey';
+            if (this.ssid === ssid.ssid) {
+              icon = 'signal_wifi_4_bar';
+              leftColor = 'green';
+            } else if (this.ssidsEnabled.indexOf(ssid.ssid) > -1) {
+              icon = 'signal_wifi_4_bar';
+              leftColor = 'grey';
+            }
+            return {
+              label: ssid.ssid,
+              value: ssid.ssid,
+              icon,
+              leftColor,
+            };
           });
+        });
+    },
+    getConnectedSsid() {
+      this.axios.get('/wifi/status')
+        .then((activeSsid) => {
+          if (activeSsid && activeSsid.data.ssid && activeSsid.data.ip_address) {
+            this.ssid = activeSsid.data.ssid;
+            this.ip = activeSsid.data.ip_address;
+          }
+        });
+    },
+    startSsidSearch() {
+      this.pollingSsidList = setInterval(() => {
+        this.getSsids();
       }, 3000);
     },
     clearSsidSearch() {
