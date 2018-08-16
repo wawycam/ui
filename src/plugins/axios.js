@@ -6,6 +6,5 @@ const axiosInstance = axios.create({
 });
 
 export default ({ Vue }) => {
-  console.log(window.location.hostname);
   Vue.use(VueAxios, axiosInstance);
 };
