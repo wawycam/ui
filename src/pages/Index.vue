@@ -51,6 +51,15 @@
               @input="setWifi"
               :options="ssidList"
             />
+            <q-alert
+              v-if="ssidPskError"
+              type="negative"
+              icon="warning"
+              :actions="[{label: 'try again', handler () {
+                setWifi();
+              }}]">
+              Unable to connect to selected Wifi, please check your password
+            </q-alert>
           </div>
         </div>
       </div>
@@ -93,7 +102,8 @@ export default {
       diskFree: 0,
       uptime: 0,
       ssid: null,
-      ip: '-',
+      ssidPskError: false,
+      ip: null,
       ssidsEnabled: [],
       ssidList: [],
     };
@@ -149,7 +159,7 @@ export default {
           this.ssidList = ssids.list.map((ssid) => {
             let icon = 'signal_wifi_4_bar_lock';
             let leftColor = 'grey';
-            if (this.ssid === ssid.ssid) {
+            if (this.ip && this.ssid === ssid.ssid) {
               icon = 'signal_wifi_4_bar';
               leftColor = 'green';
             } else if (this.ssidsEnabled.indexOf(ssid.ssid) > -1) {
@@ -169,6 +179,7 @@ export default {
       this.axios.get('/wifi/status')
         .then((activeSsid) => {
           if (activeSsid && activeSsid.data.ssid && activeSsid.data.ip_address) {
+            this.$q.loading.hide();
             this.ssid = activeSsid.data.ssid;
             this.ip = activeSsid.data.ip_address;
           }
@@ -216,18 +227,30 @@ export default {
         this.name = this.lastName;
       });
     },
-    setWifi(ssid) {
+    setWifi() {
       this.clearSsidSearch();
+      this.ssidPskError = false;
+      console.log(this.$auth.check());
       this.$q.dialog({
         title: 'Password',
-        message: `Please add password for ssid ${ssid}.`,
+        message: `Please add password for ssid ${this.ssid}.`,
         prompt: {
           model: '',
         },
         cancel: true,
         color: 'secondary',
       }).then((psk) => {
-        this.axios.post('/wifi', { ssid, psk });
+        this.$q.loading.show({
+          message: 'connecting...',
+          spinnerSize: 25,
+          spinnerColor: 'white',
+        });
+        this.axios.post('/wifi', { ssid: this.ssid, psk }).then(() => {
+          this.getConnectedSsid();
+        }).catch(() => {
+          this.$q.loading.hide();
+          this.ssidPskError = true;
+        });
       });
     },
   },

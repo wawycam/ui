@@ -3,8 +3,26 @@ const routes = [
     path: '/',
     component: () => import('layouts/layout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
-      { path: '/notconnected', component: () => import('pages/NotConnected.vue') },
+      {
+        path: '',
+        component: () => import('pages/Index.vue'),
+      },
+      {
+        path: '/notconnected', component: () => import('pages/NotConnected.vue'),
+      },
+    ],
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    meta: { auth: false },
+    component: () => import('layouts/authLayout'),
+    children: [
+      {
+        path: 'login',
+        name: 'login',
+        component: () => import('components/auth/login'),
+      },
     ],
   },
 ];
