@@ -5,6 +5,7 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
+      'apollo',
       'vuelidate',
       'vueAuth',
     ],
@@ -22,6 +23,7 @@ module.exports = function (ctx) {
     build: {
       env: {
         API_URL: JSON.stringify(process.env.API_URL),
+        RTS_URI: JSON.stringify(process.env.RTS_URI),
       },
       scopeHoisting: true,
       // vueRouterMode: 'history',
@@ -66,6 +68,7 @@ module.exports = function (ctx) {
         'QSpinner',
         'QSpinnerGears',
         'QAlert',
+        'QModal',
       ],
       directives: [
         'Ripple'

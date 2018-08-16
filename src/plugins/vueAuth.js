@@ -10,18 +10,18 @@ export default ({ Vue }) => {
     router: routerAuth,
     rolesVar: 'role',
     loginData: {
-      url: '/auth/login',
+      url: `${process.env.RTS_URI}/auth/login`,
       method: 'POST',
     },
     fetchData: {
-      url: '/auth/user',
+      url: `${process.env.RTS_URI}/auth/user`,
       method: 'GET',
       enabled: true,
     },
     parseUserData: data => data,
     tokenExpired: false,
     authRedirect: {
-      path: '/auth/login',
+      path: `${process.env.RTS_URI}/auth/login`,
     },
     refreshData: {
       enabled: false,

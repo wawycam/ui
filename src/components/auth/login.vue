@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <div class="row layout-padding">
+      <div>
+        <h4 style="padding-bottom: 20px;">{{ title }}</h4>
+        <p>{{ help }}</p>
+      </div>
       <div class="col-12">
         <q-input v-model="credentials.email" stack-label="Login" color="primary" />
       </div>
@@ -30,6 +34,7 @@
 <script>
 export default {
   name: 'login',
+  props: ['title', 'help', 'callback'],
   data() {
     return {
       loading: false,
@@ -51,7 +56,7 @@ export default {
         fetchUser: true,
       }).then(() => {
         this.loading = false;
-        this.$router.push('/dashboard');
+        this.callback();
       }, () => {
         this.isWrongCredentials = true;
         this.loading = false;
@@ -72,7 +77,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     .logo
       text-align: center;
       padding-bottom: 30px;

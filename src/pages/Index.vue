@@ -64,6 +64,16 @@
         </div>
       </div>
     </div>
+    <q-modal
+      :no-esc-dismiss="true"
+      :no-backdrop-dismiss="true"
+      v-model="openLogin">
+      <Login
+        title="Authentication"
+        help="Please login to register your camera"
+        :callback="authOk"
+      ></Login>
+    </q-modal>
   </q-page>
 </template>
 
@@ -90,10 +100,17 @@
 import moment from 'moment';
 import { QSpinnerGears } from 'quasar';
 
+import { ME } from '../gql/graphql.js';
+import Login from 'components/auth/login';
+
 export default {
   name: 'PageIndex',
+  components: {
+    Login,
+  },
   data() {
     return {
+      openLogin: false,
       connecting: true,
       timeout: false,
       oldName: '',
@@ -122,6 +139,10 @@ export default {
     },
   },
   methods: {
+    authOk() {
+      // need to reload page as Apollo should be initialize with JWT
+      window.location.reload();
+    },
     getWawy() {
       this.connecting = true;
       this.timeout = false;
@@ -182,6 +203,9 @@ export default {
             this.$q.loading.hide();
             this.ssid = activeSsid.data.ssid;
             this.ip = activeSsid.data.ip_address;
+            if (!this.$auth.check()) {
+              this.openLogin = true;
+            }
           }
         });
     },
@@ -230,7 +254,6 @@ export default {
     setWifi() {
       this.clearSsidSearch();
       this.ssidPskError = false;
-      console.log(this.$auth.check());
       this.$q.dialog({
         title: 'Password',
         message: `Please add password for ssid ${this.ssid}.`,
@@ -252,6 +275,14 @@ export default {
           this.ssidPskError = true;
         });
       });
+    },
+  },
+  apollo: {
+    me: {
+      query: ME,
+      update(data) {
+        console.log(data);
+      },
     },
   },
 };
