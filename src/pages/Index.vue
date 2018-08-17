@@ -43,18 +43,22 @@
             </div>
           </div>
           <div class="col">
-            <p v-if="ssidList.length === 0" style="padding-top: 15px;">
+            <!-- <p v-if="ssidList.length === 0" style="padding-top: 15px;">
               <q-spinner :size="15" /> searching wifi network...
-            </p>
-            <q-select
-              v-if="ssidList.length > 0"
-              v-model="ssid"
-              float-label="Select a wifi network"
-              @focus="startSsidSearch"
-              @blur="clearSsidSearch"
-              @input="setWifi"
-              :options="ssidList"
-            />
+            </p> -->
+            <div class="row">
+              <q-select
+                v-model="ssid"
+                float-label="Select a wifi network"
+                @focus="startSsidSearch"
+                @blur="clearSsidSearch"
+                @input="setWifi"
+                :options="ssidList"
+              />
+              <p v-if="searchingSsids" style="padding-top: 20px; padding-left: 20px;">
+                <q-spinner :size="15" /> searching wifi network...
+              </p>
+            </div>
             <q-alert
               v-if="ssidPskError"
               type="negative"
@@ -117,7 +121,7 @@ export default {
       openLogin: false,
       connecting: true,
       timeout: false,
-      skipQuery: true,
+      searchingSsids: false,
       oldName: '',
       name: null,
       serial: '',
@@ -179,6 +183,7 @@ export default {
       this.getConnectedSsid();
     },
     getSsids() {
+      this.searchingSsids = true;
       this.axios.get('/wifi')
         .then((response) => {
           const ssids = response.data;
@@ -206,6 +211,7 @@ export default {
         .then((activeSsid) => {
           if (activeSsid && activeSsid.data.ssid && activeSsid.data.ip_address) {
             this.$q.loading.hide();
+            this.clearSsidSearch();
             this.ssid = activeSsid.data.ssid;
             this.ip = activeSsid.data.ip_address;
             if (!this.$auth.check()) {
@@ -217,11 +223,13 @@ export default {
         });
     },
     startSsidSearch() {
+      this.getSsids();
       this.pollingSsidList = setInterval(() => {
         this.getSsids();
       }, 3000);
     },
     clearSsidSearch() {
+      this.searchingSsids = false;
       clearInterval(this.pollingSsidList);
     },
     setName() {
