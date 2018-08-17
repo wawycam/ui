@@ -19,7 +19,11 @@
       <div v-if="name" class="col">
         <div class="row column">
           <div class="col info">
-            <h2>{{ name }}</h2>
+            <h2>
+              {{ name }}
+              <q-btn v-if="ip" color="secondary" size="sm" label="online" />
+              <q-btn v-if="!ip" color="tertiary" size="sm" label="offline" />
+            </h2>
             <p><small><strong>Serial:</strong> {{ serial }}</small></p>
             <p><small><strong>IP adress:</strong> {{ ip }}</small></p>
             <p><small><strong>Uptime:</strong> {{ uptime | uptime }}</small></p>
@@ -100,7 +104,7 @@
 import moment from 'moment';
 import { QSpinnerGears } from 'quasar';
 
-import { ME } from '../gql/graphql.js';
+import { UPDATE_OR_REGISTER_CAMERA } from '../gql/graphql.js';
 import Login from 'components/auth/login';
 
 export default {
@@ -113,6 +117,7 @@ export default {
       openLogin: false,
       connecting: true,
       timeout: false,
+      skipQuery: true,
       oldName: '',
       name: null,
       serial: '',
@@ -205,6 +210,8 @@ export default {
             this.ip = activeSsid.data.ip_address;
             if (!this.$auth.check()) {
               this.openLogin = true;
+            } else {
+              this.updateOrRegisterCamera();
             }
           }
         });
@@ -276,13 +283,18 @@ export default {
         });
       });
     },
-  },
-  apollo: {
-    me: {
-      query: ME,
-      update(data) {
-        console.log(data);
-      },
+    updateOrRegisterCamera() {
+      this.$apollo.mutate({
+        mutation: UPDATE_OR_REGISTER_CAMERA,
+        variables: {
+          serial: this.serial,
+          camera: {
+            serial: this.serial,
+            name: this.name,
+            ip: this.ip,
+          },
+        },
+      });
     },
   },
 };
