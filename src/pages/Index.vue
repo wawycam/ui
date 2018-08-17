@@ -242,11 +242,12 @@ export default {
               });
               this.axios.post('/service/reboot').then((res) => {
                 if (res.status === 201) {
+                  const API_URL = `http://${this.name}.local`;
                   setInterval(() => {
-                    this.axios.get('/service/serial').then((serial) => {
+                    this.axios.get(`${API_URL}:3001/service/serial`).then((serial) => {
                       if (serial.status === 200) {
                         this.$q.loading.hide();
-                        window.location.href = `http://${this.name}.local`;
+                        window.location.href = API_URL;
                       }
                     });
                   }, 10000);
