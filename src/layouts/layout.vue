@@ -55,26 +55,24 @@ export default {
     return {
       openChangeLog: false,
       repo: false,
-      uiVersion: '',
-      apiVersion: '',
+      uiVersion: '-',
+      apiVersion: '-',
       changeLog: [],
     };
   },
   created() {
     this.axios.get('/service/update?repo=ui')
       .then((uiResponse) => {
-        this.uiVersion = uiResponse.data;
         this.axios.get('/service/update?repo=api')
           .then((apiResponse) => {
+            this.uiVersion = uiResponse.data;
             this.apiVersion = apiResponse.data;
+            this.applyUpdate();
           });
       });
   },
   filters: {
-    date: (dateLog) => {
-      console.log(dateLog);
-      return date.formatDate(dateLog, 'dddd DD MMMM YYYY - HH[h]mm');
-    },
+    date: (dateLog => date.formatDate(dateLog, 'dddd DD MMMM YYYY - HH[h]mm')),
   },
   methods: {
     haltOrRebootDialog() {
@@ -126,6 +124,44 @@ export default {
         .then((changeLog) => {
           this.changeLog = changeLog.data;
         });
+    },
+    applyUpdate() {
+      if (this.uiVersion === 'updateAvailable') {
+        this.$q.loading.show({
+          spinner: QSpinnerGears,
+          message: 'Updating UI...please wait.',
+          spinnerSize: 250,
+          spinnerColor: 'white',
+        });
+        this.axios.post('/service/update?repo=ui')
+          .then(() => {
+            if (this.apiVersion === 'updateAvailable') {
+              this.$q.loading.show({
+                spinner: QSpinnerGears,
+                message: 'Updating API...please wait.',
+                spinnerSize: 250,
+                spinnerColor: 'white',
+              });
+              this.axios.post('/service/update?repo=api')
+                .then(() => {
+                  window.location.reload();
+                });
+            } else {
+              window.location.reload();
+            }
+          });
+      } else if (this.apiVersion === 'updateAvailable') {
+        this.$q.loading.show({
+          spinner: QSpinnerGears,
+          message: 'Updating API...please wait.',
+          spinnerSize: 250,
+          spinnerColor: 'white',
+        });
+        this.axios.post('/service/update?repo=api')
+          .then(() => {
+            window.location.reload();
+          });
+      }
     },
   },
 };
