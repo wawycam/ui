@@ -14,10 +14,10 @@ module.exports = function (ctx) {
     ],
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons' // optional, you are not bound to it
+      'material-icons',
+      // 'fontawesome',
       // 'ionicons',
       // 'mdi',
-      // 'fontawesome'
     ],
     supportIE: false,
     build: {
@@ -61,6 +61,7 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
+        'QItemTile',
         'QItemSide',
         'QField',
         'QInput',
@@ -78,7 +79,8 @@ module.exports = function (ctx) {
         'Notify',
         'Dialog',
         'Loading',
-      ]
+      ],
+      // iconSet: 'fontawesome',
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language
     },

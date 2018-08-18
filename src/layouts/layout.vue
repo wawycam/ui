@@ -8,6 +8,12 @@
       >
         <q-toolbar-title>
           Wawy Configuration
+          <span slot="subtitle">
+            <strong>UI version: </strong>
+            <span class="changelog" @click="getChangeLog('ui')">{{ uiVersion }}</span> |
+            <strong>API version: </strong>
+            <span class="changelog" @click="getChangeLog('api')">{{ apiVersion }}</span>
+          </span>
         </q-toolbar-title>
         <q-btn
           flat
@@ -19,14 +25,57 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-modal
+      content-css="padding: 20px"
+      v-model="openChangeLog">
+      <h3>{{ repo }} change log</h3>
+      <q-list no-border inset-separator>
+        <q-item
+          v-for="log in changeLog"
+          :key="log.hash">
+          <q-item-side icon="fab fa-github" />
+          <q-item-main>
+            <q-item-tile label><a :href="`https://github.com/wawycam/${repo}/commit/${log.hash}`" target="_blank">{{ log.message }}</a></q-item-tile>
+            <q-item-tile sublabel lines="2">
+              {{ log.date | date }}
+            </q-item-tile>
+          </q-item-main>
+        </q-item>
+      </q-list>
+    </q-modal>
   </q-layout>
 </template>
 
 <script>
-import { QSpinnerGears } from 'quasar';
+import { date, QSpinnerGears } from 'quasar';
 
 export default {
   name: 'MyLayout',
+  data() {
+    return {
+      openChangeLog: false,
+      repo: false,
+      uiVersion: '',
+      apiVersion: '',
+      changeLog: [],
+    };
+  },
+  created() {
+    this.axios.get('/service/update?repo=ui')
+      .then((uiResponse) => {
+        this.uiVersion = uiResponse.data;
+        this.axios.get('/service/update?repo=api')
+          .then((apiResponse) => {
+            this.apiVersion = apiResponse.data;
+          });
+      });
+  },
+  filters: {
+    date: (dateLog) => {
+      console.log(dateLog);
+      return date.formatDate(dateLog, 'dddd DD MMMM YYYY - HH[h]mm');
+    },
+  },
   methods: {
     haltOrRebootDialog() {
       this.$q.dialog({
@@ -70,9 +119,31 @@ export default {
         }
       });
     },
+    getChangeLog(repo) {
+      this.repo = repo.toUpperCase();
+      this.openChangeLog = true;
+      this.axios.get(`/service/changelog?repo=${repo}`)
+        .then((changeLog) => {
+          this.changeLog = changeLog.data;
+        });
+    },
   },
 };
 </script>
 
-<style>
+<style scopped lang="stylus">
+  a {
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  ul
+    list-style-type: none
+  h3
+    -webkit-margin-before: 0
+    -webkit-margin-after: 20px;
+  .changelog
+    color: white
+    cursor: pointer
+    text-decoration: underline
 </style>

@@ -43,9 +43,6 @@
             </div>
           </div>
           <div class="col">
-            <!-- <p v-if="ssidList.length === 0" style="padding-top: 15px;">
-              <q-spinner :size="15" /> searching wifi network...
-            </p> -->
             <div class="row">
               <q-select
                 v-model="ssid"
