@@ -125,42 +125,37 @@ export default {
           this.changeLog = changeLog.data;
         });
     },
+    showLoading(repo) {
+      this.$q.loading.hide();
+      this.$q.loading.show({
+        spinner: QSpinnerGears,
+        message: `Updating ${repo}...please wait.`,
+        spinnerSize: 250,
+        spinnerColor: 'white',
+      });
+    },
+    pullUpdate(repo, callback) {
+      this.axios.post(`/service/update?repo=${repo}`)
+        .then(() => callback());
+    },
     applyUpdate() {
       if (this.uiVersion === 'updateAvailable') {
-        this.$q.loading.show({
-          spinner: QSpinnerGears,
-          message: 'Updating UI...please wait.',
-          spinnerSize: 250,
-          spinnerColor: 'white',
-        });
-        this.axios.post('/service/update?repo=ui')
-          .then(() => {
-            if (this.apiVersion === 'updateAvailable') {
-              this.$q.loading.show({
-                spinner: QSpinnerGears,
-                message: 'Updating API...please wait.',
-                spinnerSize: 250,
-                spinnerColor: 'white',
-              });
-              this.axios.post('/service/update?repo=api')
-                .then(() => {
-                  window.location.reload();
-                });
-            } else {
+        this.showLoading('UI');
+        this.pullUpdate('ui', () => {
+          if (this.apiVersion === 'updateAvailable') {
+            this.showLoading('API');
+            this.pullUpdate('api', () => {
               window.location.reload();
-            }
-          });
-      } else if (this.apiVersion === 'updateAvailable') {
-        this.$q.loading.show({
-          spinner: QSpinnerGears,
-          message: 'Updating API...please wait.',
-          spinnerSize: 250,
-          spinnerColor: 'white',
-        });
-        this.axios.post('/service/update?repo=api')
-          .then(() => {
+            });
+          } else {
             window.location.reload();
-          });
+          }
+        });
+      } else if (this.apiVersion === 'updateAvailable') {
+        this.showLoading('API');
+        this.pullUpdate('api', () => {
+          window.location.reload();
+        });
       }
     },
   },
