@@ -1,3 +1,3 @@
-# WawyCamera  UI Config
+# WawyCamera UI Config
 
 > WIP
