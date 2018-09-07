@@ -6,8 +6,8 @@ export const ME = gql`query user {
   }
 }`;
 
-export const CREATE_USER = gql`mutation createUser($name: String!, $email: String, $password: String) {
-  createUser(name: $name, email: $email, password: $password) {
+export const CREATE_USER = gql`mutation createUser($name: String!, $email: String, $password: String, $role: Int) {
+  createUser(name: $name, email: $email, password: $password, role: $role) {
     name
     email
   }
