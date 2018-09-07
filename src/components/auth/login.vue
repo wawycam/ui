@@ -161,6 +161,7 @@ export default {
               name: this.account.name,
               email: this.account.email,
               password: this.account.password,
+              role: 100,
             },
           }).then(() => {
             this.$q.notify({
