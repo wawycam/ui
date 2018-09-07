@@ -42,7 +42,7 @@
               </q-btn>
             </div>
           </div>
-          <div class="col">
+          <div class="col margin-bottom">
             <div class="row">
               <q-select
                 v-model="ssid"
@@ -65,6 +65,11 @@
               }}]">
               Unable to connect to selected Wifi, please check your password
             </q-alert>
+          </div>
+          <div class="col">
+            <div class="row">
+              <LatestTrack v-if="latestTrack" :latestTrack="latestTrack"></LatestTrack>
+            </div>
           </div>
         </div>
       </div>
@@ -103,15 +108,20 @@
 
 <script>
 import moment from 'moment';
+import _ from 'lodash';
+
 import { QSpinnerGears } from 'quasar';
 
 import { UPDATE_OR_REGISTER_CAMERA } from '../gql/graphql.js';
+
 import Login from 'components/auth/login';
+import LatestTrack from 'components/tracks/latest';
 
 export default {
   name: 'PageIndex',
   components: {
     Login,
+    LatestTrack,
   },
   data() {
     return {
@@ -129,6 +139,7 @@ export default {
       ip: null,
       ssidsEnabled: [],
       ssidList: [],
+      latestTrack: null,
     };
   },
   created() {
@@ -158,6 +169,7 @@ export default {
           this.lastName = wawy.name;
           this.name = wawy.name;
           this.serial = wawy.serial;
+          this.getLatestTrack(wawy.tracks);
           this.axios.get('/service/info')
             .then((infoResponse) => {
               const info = infoResponse.data;
@@ -301,6 +313,22 @@ export default {
           },
         },
       });
+    },
+    getLatestTrack(tracks) {
+      let latestTrack = {};
+      if (tracks && tracks.length > 0) {
+        latestTrack = tracks[tracks.length - 1];
+        const mediaTrack = _.filter(latestTrack.geoData, geoData =>
+          geoData.media && geoData.media.file);
+        console.log(mediaTrack);
+        this.latestTrack = {
+          name: latestTrack.name,
+          date: latestTrack.updatedAt,
+          geoposition: latestTrack.geoData.length,
+          media: mediaTrack.length,
+          thumb: mediaTrack[0].media.file,
+        };
+      }
     },
   },
 };
