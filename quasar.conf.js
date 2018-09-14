@@ -26,6 +26,7 @@ module.exports = function (ctx) {
       env: {
         API_URL: JSON.stringify(process.env.API_URL),
         RTS_URI: JSON.stringify(process.env.RTS_URI),
+        GOOGLE_MAP_KEY: JSON.stringify(process.env.GOOGLE_MAP_KEY),
       },
       scopeHoisting: true,
       // vueRouterMode: 'history',
