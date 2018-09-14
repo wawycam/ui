@@ -8,6 +8,10 @@ const routes = [
         component: () => import('pages/Index.vue'),
       },
       {
+        path: '/track/:id',
+        component: () => import('pages/Track.vue'),
+      },
+      {
         path: '/notconnected', component: () => import('pages/NotConnected.vue'),
       },
     ],

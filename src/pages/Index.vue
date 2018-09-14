@@ -170,6 +170,7 @@ export default {
           this.name = wawy.name;
           this.serial = wawy.serial;
           this.getLatestTrack(wawy.tracks);
+          this.$localStorage.set('tracks', JSON.stringify(wawy.tracks));
           this.axios.get('/service/info')
             .then((infoResponse) => {
               const info = infoResponse.data;
@@ -320,8 +321,8 @@ export default {
         latestTrack = tracks[tracks.length - 1];
         const mediaTrack = _.filter(latestTrack.geoData, geoData =>
           geoData.media && geoData.media.file);
-        console.log(mediaTrack);
         this.latestTrack = {
+          id: latestTrack._id,
           name: latestTrack.name,
           date: latestTrack.updatedAt,
           geoposition: latestTrack.geoData.length,

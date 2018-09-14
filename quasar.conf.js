@@ -8,6 +8,8 @@ module.exports = function (ctx) {
       'apollo',
       'vuelidate',
       'vueAuth',
+      'localStorage',
+      'googleMap',
     ],
     css: [
       'app.styl'
@@ -70,6 +72,12 @@ module.exports = function (ctx) {
         'QSpinnerGears',
         'QAlert',
         'QModal',
+        'QCard',
+        'QCardTitle',
+        'QCardMain',
+        'QCardMedia',
+        'QCardSeparator',
+        'QCardActions',
       ],
       directives: [
         'Ripple'

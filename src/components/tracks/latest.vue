@@ -11,7 +11,9 @@
             <q-item-tile label>{{ latestTrack.name }}</q-item-tile>
             <q-item-tile sublabel lines="3">
               {{ latestTrack.geoposition }} geopositions | {{ latestTrack.media }} media
-              <br/><br/><a href="">view more</a> | <a href="">download</a>
+              <br/><br/>
+              <router-link :to="`/track/${latestTrack.id}`">details</router-link> |
+              <a href="">download</a>
             </q-item-tile>
           </q-item-main>
           <q-item-side right>
