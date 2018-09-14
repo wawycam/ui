@@ -156,7 +156,6 @@ export default {
     right 0
     bottom 0
     .map
-      // margin-top 60px
       height calc(100vh - 60px)
   .q-card
     color #000 !important
