@@ -7,7 +7,7 @@
         :inverted="$q.theme === 'ios'"
       >
         <q-toolbar-title>
-          Wawy Configuration
+          Wawy Camera
           <span slot="subtitle">
             <strong>UI version: </strong>
             <span class="changelog" @click="getChangeLog('ui')">{{ uiVersion }}</span> |
