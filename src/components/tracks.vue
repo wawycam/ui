@@ -1,10 +1,7 @@
 <template>
   <div v-if="mediaTracks">
-    <div class="col">
-      <h4 class="padding-top margin-bottom"><q-icon name="gps_fixed" /> Tracks</h4>
-    </div>
-    <div class="col">
-      <q-list>
+    <div>
+      <q-list no-border inset-separator>
         <q-item v-for="(track, index) in mediaTracks" :key="index" multiline>
           <q-item-side :avatar="track.thumb | path" />
           <q-item-main>
@@ -23,7 +20,12 @@
       </q-list>
     </div>
   </div>
-  </template>
+</template>
+
+<style scopped lang="stylus">
+  .q-item
+    padding 8px 0
+</style>
 
 <script>
 import moment from 'moment';

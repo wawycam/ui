@@ -1,5 +1,5 @@
 <template>
-  <div class="main-card row">
+  <div class="row">
     <div class="justify-center col-xs-12 col-md-6">
       <q-card v-for="(media, index) in TrackMediaOnly"
               v-on:mouseover.native="highlightMarker(index)"

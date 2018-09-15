@@ -1,18 +1,19 @@
 <template>
   <q-page class="padding">
-    <div class="row">
-      <div class="col-4">
-        <img alt="WawyCam" src="~assets/PiBoxFront.png">
+    <div class="row justify-center">
+      <div class="camera col-md-4 col-sm-12">
+        <img alt="WawyCam" :src="imageDevice">
       </div>
-      <div class="col-8">
+      <div class="info col-md-8 col-sm-12">
         <div class="row column">
           <Info />
         </div>
-        <div class="padding-top">
+        <div>
           <LatestTrack />
         </div>
       </div>
     </div>
+    <q-window-resize-observable @resize="onResize" />
   </q-page>
 </template>
 
@@ -24,8 +25,15 @@
   .margin-bottom
     margin-bottom 15px
   .camera
-    position fixed
-    left 0
+    img
+      height 100%
+  @media (max-width: 768px)
+    .info
+      padding-top 5px
+  @media (max-width: 1200px)
+    .camera
+      img
+        width 100%
 </style>
 
 <script>
@@ -38,7 +46,19 @@ export default {
     Info,
     LatestTrack,
   },
+  data() {
+    return {
+      imageDevice: 'statics/PiBoxFront.png',
+    };
+  },
   methods: {
+    onResize(size) {
+      if (size.width < 768) {
+        this.imageDevice = 'statics/PiBoxFront90.png';
+      } else {
+        this.imageDevice = 'statics/PiBoxFront.png';
+      }
+    },
   },
 };
 </script>

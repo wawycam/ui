@@ -3,14 +3,20 @@
     <div v-if="camera" class="col info">
       <h2>
         {{ camera.name }}
-        <q-btn v-if="ip" color="secondary" size="sm" label="online" />
-        <q-btn v-if="!ip" color="tertiary" size="sm" label="offline" />
-        <q-btn icon="settings"
-               :disable="!enableSettings"
-               @click="openSettings = true"
-               color="warning" size="sm" label="settings" style="margin-left: 20px;"/>
       </h2>
-      <div class="row">
+      <div class="row" style="margin-bottom: 10px;">
+        <div>
+          <q-btn v-if="ip" color="secondary" size="sm" label="online" />
+          <q-btn v-if="!ip" color="tertiary" size="sm" label="offline" />
+        </div>
+        <div>
+          <q-btn icon="settings"
+                :disable="!enableSettings"
+                @click="openSettings = true"
+                color="warning" size="sm" label="settings" style="margin-left: 10px;"/>
+        </div>
+      </div>
+      <div class="row bg">
         <div class="col-6">
           <p><small><strong>Serial:</strong> {{ camera.serial }}</small></p>
         </div>
@@ -18,7 +24,7 @@
           <p><small><strong>IP adress:</strong> {{ ip }}</small></p>
         </div>
       </div>
-      <div class="row">
+      <div class="row bg">
         <div class="col-6">
           <p><small><strong>Uptime:</strong> {{ camera.uptime | uptime }}</small></p>
         </div>
@@ -64,6 +70,10 @@
     -webkit-margin-before: 0;
     -webkit-margin-after: 0;
   .info
+    .bg
+      background: lightgrey;
+      margin-top: 1px;
+      padding: 5px;
     p
       margin-top 0.6em
       margin-bottom 0.6em
@@ -72,7 +82,7 @@
       color primary
     small
       font-size 100%
-      color #969696
+      color #333
 </style>
 
 <script>
@@ -134,7 +144,6 @@ export default {
         .catch(() => {
           this.connecting = false;
           this.timeout = true;
-          // clearInterval(this.pollingSsidList);
         });
     },
     getConnectedSsid() {
