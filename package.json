@@ -7,8 +7,8 @@
   "author": "Stéphane legouffe <slegouffe@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "API_URL=http://wawycam.local:3001 RTS_URI=http://192.168.0.70:3040 ./node_modules/quasar-cli/bin/quasar dev",
-    "build": "RTS_URI=https://api.wawy.io ./node_modules/quasar-cli/bin/quasar build",
+    "dev": "GOOGLE_MAP_KEY=AIzaSyAklcr2T53GLWOXXPLcEDyt73kqCvDAKAE API_URL=http://wawycam.local:3001 RTS_URI=http://192.168.0.70:3040 ./node_modules/quasar-cli/bin/quasar dev",
+    "build": "GOOGLE_MAP_KEY=AIzaSyAklcr2T53GLWOXXPLcEDyt73kqCvDAKAE RTS_URI=https://api.wawy.io ./node_modules/quasar-cli/bin/quasar build",
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
   },
