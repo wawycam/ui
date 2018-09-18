@@ -24,7 +24,7 @@
 
 <style scopped lang="stylus">
   .q-item
-    padding 8px 0
+    padding 8px 8px
 </style>
 
 <script>
@@ -75,7 +75,7 @@ export default {
             });
           }
         });
-        this.mediaTracks = mediaTracks;
+        this.mediaTracks = mediaTracks.reverse();
       }
     },
     getLatestTrack(tracks) {

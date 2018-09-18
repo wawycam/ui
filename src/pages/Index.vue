@@ -8,7 +8,7 @@
         <div class="row column">
           <Info />
         </div>
-        <div>
+        <div class="tracks">
           <LatestTrack />
         </div>
       </div>
@@ -24,10 +24,12 @@
     padding-top 30px
   .margin-bottom
     margin-bottom 15px
-  .camera
-    img
-      height 100%
+  .tracks
+      height calc(100vh - 400px)
+      overflow-y auto;
   @media (max-width: 768px)
+    .tracks
+      height 100%
     .info
       padding-top 5px
   @media (max-width: 1200px)
